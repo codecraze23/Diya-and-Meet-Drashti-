@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diya-and-Meet{Drashti}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --bg-primary: #000;
+            --bg-secondary: #1c1c1e;
+            --bg-tertiary: #2c2c2e;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --accent: #0a84ff;
+            --accent-light: #5ac8fa;
+            --blur-bg: rgba(28, 28, 30, 0.8);
+            --border-color: #38383a;
+            --success: #30d158;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Background Image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: var(--bg-image-url, url('https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80'));
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: -1;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .ios-badge {
+            background: linear-gradient(135deg, #0a84ff, #5ac8fa);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Video Container */
+        .video-container {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            background-color: var(--bg-secondary);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .video-container:hover {
+            transform: translateY(-5px);
+        }
+
+        #main-video {
+            width: 100%;
+            display: block;
+            background-color: #000;
+        }
+
+        /* Video Controls */
+        .video-controls {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .left-controls, .right-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: var(--bg-tertiary);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:hover {
+            background-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .time-display {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        /* Video Info */
+        .video-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            background-color: var(--blur-bg);
+            border-radius: 18px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .video-title {
+            font-size: 24px;
+            font-weight: 700;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .video-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: rgba(10, 132, 255, 0.1);
+            border-radius: 12px;
+            min-width: 120px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+
+        /* Download Button */
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(10, 132, 255, 0.3);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            background-color: var(--blur-bg);
+            border-radius: 18px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .setting-option:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-label {
+            font-size: 16px;
+        }
+
+        /* iOS Style Toggle Switch */
+        .ios-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+        }
+
+        .ios-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .ios-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .ios-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .ios-toggle input:checked + .ios-toggle-slider {
+            background-color: var(--accent);
+        }
+
+        .ios-toggle input:checked + .ios-toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .video-title {
+                font-size: 20px;
+                min-width: 100%;
+            }
+            
+            .video-stats {
+                justify-content: center;
+            }
+            
+            .control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+            
+            .stat {
+                min-width: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .control-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .left-controls, .right-controls {
+                width: 100%;
+                justify-content: space-around;
+            }
+            
+            .settings-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Image Container -->
+    <div class="background-container" id="background-container">
+        <div class="background-overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header fade-in">
+            <div class="logo">
+                <i class="fas fa-play-circle"></i>
+                <span>Diya and Meet{Drashti}</span>
+            </div>
+            <div class="ios-badge">
+                Short Film Trailer
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Video Container -->
+            <div class="video-container fade-in delay-1">
+                <video id="main-video" poster="https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80">
+                    <!-- Video source will be added dynamically -->
+                </video>
+                
+                <div class="video-controls">
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    
+                    <div class="control-buttons">
+                        <div class="left-controls">
+                            <button class="control-btn" id="rewind-btn" title="Rewind 10s">
+                                <i class="fas fa-backward"></i>
+                            </button>
+                            <button class="control-btn" id="play-pause-btn" title="Play/Pause">
+                                <i class="fas fa-play" id="play-icon"></i>
+                            </button>
+                            <button class="control-btn" id="forward-btn" title="Forward 10s">
+                                <i class="fas fa-forward"></i>
+                            </button>
+                            <div class="time-display" id="time-display">0:00 / 0:00</div>
+                        </div>
+                        
+                        <div class="right-controls">
+                            <button class="control-btn" id="volume-btn" title="Volume">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            <button class="control-btn" id="fullscreen-btn" title="Fullscreen">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Info -->
+            <div class="video-info fade-in delay-2">
+                <div class="video-title" id="video-title">Nature Documentary - Mountain Views</div>
+                <div class="video-stats">
+                    <div class="stat">
+                        <span class="stat-label">Duration</span>
+                        <span class="stat-value" id="duration-stat">0:00</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Remaining</span>
+                        <span class="stat-value" id="remaining-stat">0:00</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Progress</span>
+                        <span class="stat-value" id="progress-stat">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Button -->
+            <button class="download-btn fade-in delay-3" id="download-btn">
+                <i class="fas fa-download"></i>
+                Download Video
+            </button>
+ <!-- Settings Panel -->
+            <div class="settings-panel fade-in delay-4">
+                <h3 class="settings-title"><i class="fas fa-sliders-h"></i> Player Settings</h3>
+                <div class="settings-options">
+                    <div class="setting-option">
+                        <span class="setting-label">Autoplay</span>
+                        <label class="ios-toggle">
+                            <input type="checkbox" id="autoplay-toggle" checked>
+                            <span class="ios-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-option">
+                        <span class="setting-label">Loop Video</span>
+                        <label class="ios-toggle">
+                            <input type="checkbox" id="loop-toggle">
+                            <span class="ios-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-option">
+                        <span class="setting-label">Blur Effect</span>
+                        <label class="ios-toggle">
+                            <input type="checkbox" id="blur-toggle" checked>
+                            <span class="ios-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-option">
+                        <span class="setting-label">Dark Mode</span>
+                        <label class="ios-toggle">
+                            <input type="checkbox" id="darkmode-toggle" checked disabled>
+                            <span class="ios-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </main>
+    <script>
+        // Video Configuration - You can change these values
+        const VIDEO_URL = "https://www.dropbox.com/scl/fi/jcjdwpk570uptx3w4g1wt/Full-Movie.mp4?rlkey=ptdjk4dvn8f6up5tnq0q6ia7k&st=dp4u7hfa&raw=1";
+        const BACKGROUND_IMAGE_URL = "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80";
+        const VIDEO_TITLE = "Diya and Meet{Drashti} short Film";
+        
+        // DOM Elements
+        const videoElement = document.getElementById('main-video');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playIcon = document.getElementById('play-icon');
+        const rewindBtn = document.getElementById('rewind-btn');
+        const forwardBtn = document.getElementById('forward-btn');
+        const volumeBtn = document.getElementById('volume-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const timeDisplay = document.getElementById('time-display');
+        const downloadBtn = document.getElementById('download-btn');
+        const durationStat = document.getElementById('duration-stat');
+        const remainingStat = document.getElementById('remaining-stat');
+        const progressStat = document.getElementById('progress-stat');
+        const videoTitle = document.getElementById('video-title');
+        const backgroundContainer = document.getElementById('background-container');
+        const autoplayToggle = document.getElementById('autoplay-toggle');
+        const loopToggle = document.getElementById('loop-toggle');
+        const blurToggle = document.getElementById('blur-toggle');
+        const darkmodeToggle = document.getElementById('darkmode-toggle');
+
+        // Initialize video
+        function initVideo() {
+            videoElement.src = VIDEO_URL;
+            videoTitle.textContent = VIDEO_TITLE;
+            
+            // Set background image
+            backgroundContainer.style.setProperty('--bg-image-url', `url('${BACKGROUND_IMAGE_URL}')`);
+            
+            // Enable autoplay based on toggle
+            videoElement.autoplay = autoplayToggle.checked;
+            
+            // Set loop based on toggle
+            videoElement.loop = loopToggle.checked;
+            
+            // Update UI when video metadata is loaded
+            videoElement.addEventListener('loadedmetadata', function() {
+                updateTimeDisplay();
+                updateStats();
+            });
+            
+            // Play/Pause button functionality
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            
+            // Rewind button functionality
+            rewindBtn.addEventListener('click', () => {
+                videoElement.currentTime -= 10;
+            });
+            
+            // Forward button functionality
+            forwardBtn.addEventListener('click', () => {
+                videoElement.currentTime += 10;
+            });
+            
+            // Volume button functionality
+            volumeBtn.addEventListener('click', toggleMute);
+            
+            // Fullscreen button functionality
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            
+            // Progress bar functionality
+            progressContainer.addEventListener('click', setProgress);
+            
+            // Video time update event
+            videoElement.addEventListener('timeupdate', updateProgress);
+            
+            // Download button functionality
+            downloadBtn.addEventListener('click', downloadVideo);
+            
+            // Update play/pause icon based on video state
+            videoElement.addEventListener('play', () => {
+                playIcon.className = 'fas fa-pause';
+                playPauseBtn.setAttribute('title', 'Pause');
+            });
+            
+            videoElement.addEventListener('pause', () => {
+                playIcon.className = 'fas fa-play';
+                playPauseBtn.setAttribute('title', 'Play');
+            });
+            
+            // Toggle handlers
+            autoplayToggle.addEventListener('change', function() {
+                videoElement.autoplay = this.checked;
+            });
+            
+            loopToggle.addEventListener('change', function() {
+                videoElement.loop = this.checked;
+            });
+            
+            blurToggle.addEventListener('change', function() {
+                document.querySelectorAll('.video-container, .video-info, .settings-panel').forEach(el => {
+                    el.style.backdropFilter = this.checked ? 'blur(20px)' : 'none';
+                    el.style.webkitBackdropFilter = this.checked ? 'blur(20px)' : 'none';
+                });
+            });
+            
+            // Auto-play video on load
+            if (autoplayToggle.checked) {
+                const playPromise = videoElement.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Autoplay prevented by browser. User interaction required.");
+                        playIcon.className = 'fas fa-play';
+                    });
+                }
+            }
+            
+            // Set initial blur effect
+            if (blurToggle.checked) {
+                document.querySelectorAll('.video-container, .video-info, .settings-panel').forEach(el => {
+                    el.style.backdropFilter = 'blur(20px)';
+                    el.style.webkitBackdropFilter = 'blur(20px)';
+                });
+            }
+        }
+
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (videoElement.paused || videoElement.ended) {
+                videoElement.play();
+            } else {
+                videoElement.pause();
+            }
+        }
+
+        // Toggle mute
+        function toggleMute() {
+            videoElement.muted = !videoElement.muted;
+            const volumeIcon = volumeBtn.querySelector('i');
+            volumeIcon.className = videoElement.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+            volumeBtn.setAttribute('title', videoElement.muted ? 'Unmute' : 'Mute');
+        }
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (videoElement.requestFullscreen) {
+                    videoElement.requestFullscreen();
+                } else if (videoElement.webkitRequestFullscreen) {
+                    videoElement.webkitRequestFullscreen();
+                } else if (videoElement.msRequestFullscreen) {
+                    videoElement.msRequestFullscreen();
+                }
+                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                fullscreenBtn.setAttribute('title', 'Exit Fullscreen');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                fullscreenBtn.setAttribute('title', 'Fullscreen');
+            }
+        }
+
+        // Update progress bar and time display
+        function updateProgress() {
+            const percent = (videoElement.currentTime / videoElement.duration) * 100;
+            progressBar.style.width = `${percent}%`;
+            updateTimeDisplay();
+            updateStats();
+        }
+
+        // Set progress based on click position
+        function setProgress(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = videoElement.duration;
+            videoElement.currentTime = (clickX / width) * duration;
+        }
+
+        // Update time display
+        function updateTimeDisplay() {
+            const currentTime = formatTime(videoElement.currentTime);
+            const duration = formatTime(videoElement.duration);
+            timeDisplay.textContent = `${currentTime} / ${duration}`;
+        }
+
+        // Update stats (duration, remaining, progress)
+        function updateStats() {
+            const duration = videoElement.duration;
+            const currentTime = videoElement.currentTime;
+            const remaining = duration - currentTime;
+            const progressPercent = duration > 0 ? Math.round((currentTime / duration) * 100) : 0;
+            
+            durationStat.textContent = formatTime(duration);
+            remainingStat.textContent = formatTime(remaining);
+            progressStat.textContent = `${progressPercent}%`;
+        }
+
+        // Format time in MM:SS
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds === Infinity) return "0:00";
+            
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Download video
+        function downloadVideo() {
+            // Create a temporary link for download
+            const link = document.createElement('a');
+            link.href = VIDEO_URL;
+            link.download = `video_${Date.now()}.mp4`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show download confirmation
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<i class="fas fa-check"></i> Download Started!';
+            downloadBtn.style.background = 'linear-gradient(135deg, var(--success), #34c759)';
+            
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.style.background = 'linear-gradient(135deg, var(--accent), var(--accent-light))';
+            }, 2000);
+        }
+
+        // Initialize the video player when page loads
+        window.addEventListener('DOMContentLoaded', initVideo);
+        
+        // Handle fullscreen change events
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('msfullscreenchange', handleFullscreenChange);
+        
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                fullscreenBtn.setAttribute('title', 'Fullscreen');
+            }
+        }
+    </script>
+</body>
+</html>
